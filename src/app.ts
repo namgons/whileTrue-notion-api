@@ -1,13 +1,14 @@
+require("dotenv").config();
 import express, { Application, Request, Response } from "express";
+import startOAuthProcess from "./oauth";
 
 const app: Application = express();
 
-const port: number = 3001;
-
-app.get("/toto", (req: Request, res: Response) => {
-  res.send("Hello toto");
+app.get("/oauth/:code", (req: Request, res: Response) => {
+  const code = req.params.code;
+  const token = startOAuthProcess(code);
+  console.log("Received");
+  console.log("code", code);
 });
 
-app.listen(port, function () {
-  console.log(`App is listening on port ${port} !`);
-});
+app.listen(process.env.PORT);
