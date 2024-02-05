@@ -1,10 +1,11 @@
 import axios from "axios";
+import { NotionAccessTokenProps } from "./notion/props";
 
-const startOAuthProcess = async (accessCode: string) => {
-  await requestToken(accessCode);
+const startOAuthProcess = async (accessCode: string): Promise<NotionAccessTokenProps> => {
+  return await requestToken(accessCode);
 };
 
-const requestToken = async (accessCode: string) => {
+const requestToken = async (accessCode: string): Promise<NotionAccessTokenProps> => {
   const NotionEndPoint = "https://api.notion.com/v1/oauth/token";
 
   const encoded = Buffer.from(
@@ -16,7 +17,7 @@ const requestToken = async (accessCode: string) => {
     {
       grant_type: "authorization_code",
       code: accessCode,
-      redirect_uri: "https://github.com",
+      redirect_uri: process.env.REDIRECT_URI,
     },
     {
       headers: {
@@ -27,7 +28,7 @@ const requestToken = async (accessCode: string) => {
     }
   );
 
-  console.log(response.data);
+  return response.data;
 };
 
 export default startOAuthProcess;
