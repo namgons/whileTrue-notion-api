@@ -18,7 +18,6 @@ const printProblems = async (token: string | undefined) => {
 
   console.log(array);
   console.log(resp.results.length);
-  console.log("====================================\n\n");
 };
 
 export { createNotionClient, printProblems };
