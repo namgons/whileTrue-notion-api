@@ -1,9 +1,8 @@
 require("dotenv").config();
 import express, { Application, Request, Response } from "express";
-import startOAuthProcess from "./oauth";
+import startOAuthProcess from "./notion/oauth";
 import { NotionAccessTokenProps } from "./notion/props";
-import { printProblems } from "./notion/utils";
-import { createPage, retrieveDatabae } from "./notion/test";
+import { createPage, queryDatabase, retrieveDatabae } from "./notion/api";
 
 const app: Application = express();
 
@@ -20,6 +19,7 @@ app.get("/api/member/oauth/:code", async (req: Request, res: Response) => {
 });
 
 app.get("/retrieve-database", async (req: Request, res: Response) => {
+  console.log("[REQ] Retrieve a Database");
   const response = await retrieveDatabae();
   res.send({
     response,
@@ -27,7 +27,16 @@ app.get("/retrieve-database", async (req: Request, res: Response) => {
 });
 
 app.get("/create-page", async (req: Request, res: Response) => {
+  console.log("[REQ] Create a Page");
   const response = await createPage();
+  res.send({
+    response,
+  });
+});
+
+app.get("/query-database", async (req: Request, res: Response) => {
+  console.log("[REQ] Query a Database");
+  const response = await queryDatabase();
   res.send({
     response,
   });

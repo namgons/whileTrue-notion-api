@@ -37,3 +37,9 @@ export const createPage = async () => {
     },
   });
 };
+
+export const queryDatabase = async () => {
+  return await notion.databases.query({
+    database_id: process.env.DATABASE_ID,
+  });
+};

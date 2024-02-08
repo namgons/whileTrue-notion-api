@@ -1,5 +1,5 @@
 import axios from "axios";
-import { NotionAccessTokenProps } from "./notion/props";
+import { NotionAccessTokenProps } from "./props";
 
 const startOAuthProcess = async (accessCode: string): Promise<NotionAccessTokenProps> => {
   return await requestToken(accessCode);
