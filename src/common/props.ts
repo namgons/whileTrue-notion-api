@@ -1,4 +1,4 @@
-type NotionAccessTokenProps = {
+export type NotionAccessTokenProps = {
   access_token: string;
   token_type: string;
   bot_id: string;
@@ -19,5 +19,3 @@ type NotionAccessTokenProps = {
   duplicated_template_id: string | null;
   request_id: string;
 };
-
-export { NotionAccessTokenProps };
