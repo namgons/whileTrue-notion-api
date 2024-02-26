@@ -1,4 +1,5 @@
 import { ProblemPage } from "../common/class";
+import { IconType, RequiredColumnName, RequiredColumnType } from "../common/enum";
 import DefaultDatabaseRequestDto from "../dto/request/DefaultDatabaseRequestDto";
 import InsertProblemRequestDto from "../dto/request/InsertProblemRequestDto";
 import CheckDatabaseResponseDto from "../dto/response/CheckDatabaseResponseDto";
@@ -24,21 +25,21 @@ export const checkDatabase = async ({ notionApiKey, databaseId }: DefaultDatabas
   const properties = response.properties;
 
   if (
-    !properties.hasOwnProperty("출처") ||
-    !properties.hasOwnProperty("난이도") ||
-    !properties.hasOwnProperty("문제 번호") ||
-    !properties.hasOwnProperty("문제 이름") ||
-    !properties.hasOwnProperty("URL")
+    !properties.hasOwnProperty(RequiredColumnName.PROBLEM_SITE) ||
+    !properties.hasOwnProperty(RequiredColumnName.PROBLEM_LEVEL) ||
+    !properties.hasOwnProperty(RequiredColumnName.PROBLEM_NUMBER) ||
+    !properties.hasOwnProperty(RequiredColumnName.PROBLEM_TITLE) ||
+    !properties.hasOwnProperty(RequiredColumnName.PROBLEM_URL)
   ) {
     return new CheckDatabaseResponseDto(false);
   }
 
   if (
-    properties["출처"].type !== "select" ||
-    properties["난이도"].type !== "select" ||
-    properties["문제 번호"].type !== "number" ||
-    properties["문제 이름"].type !== "title" ||
-    properties["URL"].type !== "url"
+    properties[RequiredColumnName.PROBLEM_SITE].type !== RequiredColumnType.PROBLEM_SITE ||
+    properties[RequiredColumnName.PROBLEM_LEVEL].type !== RequiredColumnType.PROBLEM_LEVEL ||
+    properties[RequiredColumnName.PROBLEM_NUMBER].type !== RequiredColumnType.PROBLEM_NUMBER ||
+    properties[RequiredColumnName.PROBLEM_TITLE].type !== RequiredColumnType.PROBLEM_TITLE ||
+    properties[RequiredColumnName.PROBLEM_URL].type !== RequiredColumnType.PROBLEM_URL
   ) {
     return new CheckDatabaseResponseDto(false);
   }
@@ -67,20 +68,33 @@ export const getAllProblemList = async ({
       for (let page of response.results) {
         const iconType = page.icon.type;
         let iconSrc = "";
-        if (iconType === "emoji") {
+        if (iconType === IconType.EMOJI) {
           iconSrc = page.icon.emoji;
-        } else if (iconType === "external") {
+        } else if (iconType === IconType.EXTERNAL) {
           iconSrc = page.icon.external.url;
         }
 
         const properties = page.properties;
-        const site = properties["출처"].select.name;
-        const level = properties["난이도"].select.name;
-        const number = properties["문제 번호"].number;
-        const title = properties["문제 이름"].title[0].plain_text;
-        const url = properties["URL"].url;
+        const site = properties[RequiredColumnName.PROBLEM_SITE].select.name;
+        const level = properties[RequiredColumnName.PROBLEM_LEVEL].select.name;
+        const number = properties[RequiredColumnName.PROBLEM_NUMBER].number;
+        const titleList = properties[RequiredColumnName.PROBLEM_TITLE].title;
+        const url = properties[RequiredColumnName.PROBLEM_URL].url;
 
-        problemPageList.push(new ProblemPage(site, level, number, title, url, iconType, iconSrc));
+        if (
+          site === null ||
+          level === null ||
+          number === null ||
+          titleList.length === 0 ||
+          titleList[0].plain_text === null ||
+          url === null
+        ) {
+          continue;
+        }
+
+        problemPageList.push(
+          new ProblemPage(site, level, number, titleList[0].plain_text, url, iconType, iconSrc)
+        );
       }
     } catch (error) {
       return new ProblemListResponseDto(false);

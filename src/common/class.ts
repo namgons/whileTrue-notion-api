@@ -1,11 +1,13 @@
+import { SiteType } from "./enum";
+
 export class Problem {
-  site: string;
+  site: SiteType;
   level: string;
   number: string;
   title: string;
   url: string;
 
-  constructor(site: string, level: string, number: string, title: string, url: string) {
+  constructor(site: SiteType, level: string, number: string, title: string, url: string) {
     this.site = site;
     this.level = level;
     this.number = number;
@@ -19,7 +21,7 @@ export class ProblemPage extends Problem {
   iconSrc: string;
 
   constructor(
-    site: string,
+    site: SiteType,
     level: string,
     number: string,
     title: string,

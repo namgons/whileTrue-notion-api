@@ -3,6 +3,7 @@ import axios from "axios";
 import { NotionAccessTokenProps } from "../common/props";
 import { Client } from "@notionhq/client";
 import { Problem, ProblemPage } from "../common/class";
+import { IconType, RequiredColumnName } from "../common/enum";
 
 export const requestToken = async (accessCode: string): Promise<NotionAccessTokenProps> => {
   const NotionEndPoint = "https://api.notion.com/v1/oauth/token";
@@ -52,17 +53,20 @@ export const createPage = async ({
 }) => {
   const notion = new Client({ auth: notionApiKey });
   const properties: any = {
-    "문제 사이트": {
+    [RequiredColumnName.PROBLEM_SITE]: {
       select: {
         name: problemPage.site,
       },
     },
-    난이도: {
+    [RequiredColumnName.PROBLEM_LEVEL]: {
       select: {
         name: problemPage.level,
       },
     },
-    "문제 이름": {
+    [RequiredColumnName.PROBLEM_NUMBER]: {
+      number: Number(problemPage.number),
+    },
+    [RequiredColumnName.PROBLEM_TITLE]: {
       title: [
         {
           text: {
@@ -71,20 +75,17 @@ export const createPage = async ({
         },
       ],
     },
-    "문제 번호": {
-      number: Number(problemPage.number),
-    },
-    URL: {
+    [RequiredColumnName.PROBLEM_URL]: {
       url: problemPage.url,
     },
   };
 
-  if (problemPage.iconType == "emoji") {
+  if (problemPage.iconType == IconType.EMOJI) {
     properties.icon = {
       type: "emoji",
       emoji: problemPage.iconSrc,
     };
-  } else if (problemPage.iconType === "external") {
+  } else if (problemPage.iconType === IconType.EXTERNAL) {
     properties.icon = {
       type: "external",
       external: {
@@ -132,9 +133,9 @@ export const filterDatabase = async ({
     database_id: databaseId,
     filter: {
       and: [
-        { property: "문제 사이트", select: { equals: problem.site } },
-        { property: "문제 번호", number: { equals: Number(problem.number) } },
-        { property: "문제 이름", rich_text: { contains: problem.title } },
+        { property: RequiredColumnName.PROBLEM_SITE, select: { equals: problem.site } },
+        { property: RequiredColumnName.PROBLEM_NUMBER, number: { equals: Number(problem.number) } },
+        { property: RequiredColumnName.PROBLEM_TITLE, rich_text: { contains: problem.title } },
       ],
     },
   });
