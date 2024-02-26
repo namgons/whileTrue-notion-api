@@ -1,5 +1,6 @@
 import { ProblemPage } from "../common/class";
 import { IconType, RequiredColumnName, RequiredColumnType } from "../common/enum";
+import { isDatabaseValid } from "../common/utils";
 import DefaultDatabaseRequestDto from "../dto/request/DefaultDatabaseRequestDto";
 import ProblemPageRequestDto from "../dto/request/ProblemPageRequestDto";
 import ProblemRequestDto from "../dto/request/ProblemRequestDto";
@@ -31,23 +32,7 @@ export const checkDatabase = async ({ notionApiKey, databaseId }: DefaultDatabas
   const databaseTitle = response.title.plain_text;
   const properties = response.properties;
 
-  if (
-    !properties.hasOwnProperty(RequiredColumnName.PROBLEM_SITE) ||
-    !properties.hasOwnProperty(RequiredColumnName.PROBLEM_LEVEL) ||
-    !properties.hasOwnProperty(RequiredColumnName.PROBLEM_NUMBER) ||
-    !properties.hasOwnProperty(RequiredColumnName.PROBLEM_TITLE) ||
-    !properties.hasOwnProperty(RequiredColumnName.PROBLEM_URL)
-  ) {
-    return new CheckDatabaseResponseDto(false);
-  }
-
-  if (
-    properties[RequiredColumnName.PROBLEM_SITE].type !== RequiredColumnType.PROBLEM_SITE ||
-    properties[RequiredColumnName.PROBLEM_LEVEL].type !== RequiredColumnType.PROBLEM_LEVEL ||
-    properties[RequiredColumnName.PROBLEM_NUMBER].type !== RequiredColumnType.PROBLEM_NUMBER ||
-    properties[RequiredColumnName.PROBLEM_TITLE].type !== RequiredColumnType.PROBLEM_TITLE ||
-    properties[RequiredColumnName.PROBLEM_URL].type !== RequiredColumnType.PROBLEM_URL
-  ) {
+  if (!isDatabaseValid(properties)) {
     return new CheckDatabaseResponseDto(false);
   }
 
@@ -71,40 +56,42 @@ export const getAllProblemList = async ({
     });
     hasMore = response.has_more;
     nextCursor = response.next_cursor;
-    try {
-      for (let page of response.results) {
-        const iconType = page.icon.type;
-        let iconSrc = "";
-        if (iconType === IconType.EMOJI) {
-          iconSrc = page.icon.emoji;
-        } else if (iconType === IconType.EXTERNAL) {
-          iconSrc = page.icon.external.url;
-        }
 
-        const properties = page.properties;
-        const site = properties[RequiredColumnName.PROBLEM_SITE].select.name;
-        const level = properties[RequiredColumnName.PROBLEM_LEVEL].select.name;
-        const number = properties[RequiredColumnName.PROBLEM_NUMBER].number;
-        const titleList = properties[RequiredColumnName.PROBLEM_TITLE].title;
-        const url = properties[RequiredColumnName.PROBLEM_URL].url;
-
-        if (
-          site === null ||
-          level === null ||
-          number === null ||
-          titleList.length === 0 ||
-          titleList[0].plain_text === null ||
-          url === null
-        ) {
-          continue;
-        }
-
-        problemPageList.push(
-          new ProblemPage(site, level, number, titleList[0].plain_text, url, iconType, iconSrc)
-        );
+    for (let page of response.results) {
+      const iconType = page.icon.type;
+      let iconSrc = "";
+      if (iconType === IconType.EMOJI) {
+        iconSrc = page.icon.emoji;
+      } else if (iconType === IconType.EXTERNAL) {
+        iconSrc = page.icon.external.url;
       }
-    } catch (error) {
-      return new ProblemListResponseDto(false);
+
+      const properties = page.properties;
+
+      if (!isDatabaseValid(properties)) {
+        return new ProblemListResponseDto(false);
+      }
+
+      const site = properties[RequiredColumnName.PROBLEM_SITE].select.name;
+      const level = properties[RequiredColumnName.PROBLEM_LEVEL].select.name;
+      const number = properties[RequiredColumnName.PROBLEM_NUMBER].number;
+      const titleList = properties[RequiredColumnName.PROBLEM_TITLE].title;
+      const url = properties[RequiredColumnName.PROBLEM_URL].url;
+
+      if (
+        site === null ||
+        level === null ||
+        number === null ||
+        titleList.length === 0 ||
+        titleList[0].plain_text === null ||
+        url === null
+      ) {
+        continue;
+      }
+
+      problemPageList.push(
+        new ProblemPage(site, level, number, titleList[0].plain_text, url, iconType, iconSrc)
+      );
     }
   }
 
