@@ -1,11 +1,11 @@
-import { SiteType } from "./enum";
+import { IconType, SiteType } from "./enum";
 
 export class Problem {
-  site: SiteType;
-  level: string;
-  number: string;
-  title: string;
-  url: string;
+  site;
+  level;
+  number;
+  title;
+  url;
 
   constructor(site: SiteType, level: string, number: string, title: string, url: string) {
     this.site = site;
@@ -17,8 +17,8 @@ export class Problem {
 }
 
 export class ProblemPage extends Problem {
-  iconType: string;
-  iconSrc: string;
+  iconType;
+  iconSrc;
 
   constructor(
     site: SiteType,
@@ -26,7 +26,7 @@ export class ProblemPage extends Problem {
     number: string,
     title: string,
     url: string,
-    iconType: string,
+    iconType: IconType.EMOJI | IconType.EXTERNAL,
     iconSrc: string
   ) {
     super(site, level, number, title, url);

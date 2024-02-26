@@ -1,5 +1,3 @@
-import { NotionAccessTokenProps } from "../../common/props";
-
 class NotionTokenResponseDto {
   notionApiKey: string;
   tokenType: string;
@@ -10,7 +8,7 @@ class NotionTokenResponseDto {
   notionUserName: string;
   notionUserAvatarUrl: string;
 
-  constructor(response: NotionAccessTokenProps) {
+  constructor(response: any) {
     this.notionApiKey = response.access_token;
     this.tokenType = response.token_type;
     this.workspaceName = response.workspace_name;

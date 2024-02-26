@@ -1,10 +1,9 @@
 import axios from "axios";
-import { NotionAccessTokenProps } from "../common/props";
 import { Client } from "@notionhq/client";
 import { Problem, ProblemPage } from "../common/class";
 import { IconType, RequiredColumnName } from "../common/enum";
 
-export const requestToken = async (accessCode: string): Promise<NotionAccessTokenProps> => {
+export const requestToken = async (accessCode: string) => {
   const NotionEndPoint = "https://api.notion.com/v1/oauth/token";
 
   const encoded = Buffer.from(
