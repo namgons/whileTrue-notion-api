@@ -90,14 +90,14 @@ export const getAllProblemList = async ({
         return new ProblemListResponseDto(false);
       }
 
-      const site = properties[RequiredColumnName.PROBLEM_SITE].select?.name;
+      const siteType = properties[RequiredColumnName.PROBLEM_SITE].select?.name;
       const level = properties[RequiredColumnName.PROBLEM_LEVEL].select?.name;
       const number = properties[RequiredColumnName.PROBLEM_NUMBER]?.number;
       const titleList = properties[RequiredColumnName.PROBLEM_TITLE]?.title;
       const url = properties[RequiredColumnName.PROBLEM_URL]?.url;
 
       if (
-        site === null ||
+        siteType === null ||
         level === null ||
         number === null ||
         titleList === null ||
@@ -109,7 +109,7 @@ export const getAllProblemList = async ({
       }
 
       problemPageList.push(
-        new ProblemPage(site, level, number, titleList[0].plain_text, url, iconType, iconSrc)
+        new ProblemPage(siteType, level, number, titleList[0].plain_text, url, iconType, iconSrc)
       );
     }
   }

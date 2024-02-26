@@ -58,7 +58,7 @@ export const createPage = async ({
     properties: {
       [RequiredColumnName.PROBLEM_SITE]: {
         select: {
-          name: problemPage.site,
+          name: problemPage.siteType,
         },
       },
       [RequiredColumnName.PROBLEM_LEVEL]: {
@@ -131,7 +131,7 @@ export const filterDatabase = async ({
     database_id: databaseId,
     filter: {
       and: [
-        { property: RequiredColumnName.PROBLEM_SITE, select: { equals: problem.site } },
+        { property: RequiredColumnName.PROBLEM_SITE, select: { equals: problem.siteType } },
         { property: RequiredColumnName.PROBLEM_NUMBER, number: { equals: Number(problem.number) } },
         { property: RequiredColumnName.PROBLEM_TITLE, rich_text: { contains: problem.title } },
       ],
