@@ -17,6 +17,7 @@ export enum RequiredColumnType {
 export enum IconType {
   EMOJI = "emoji",
   EXTERNAL = "external",
+  FILE = "file",
 }
 
 export enum SiteType {

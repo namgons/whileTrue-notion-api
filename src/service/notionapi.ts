@@ -50,41 +50,47 @@ export const createPage = async ({
   problemPage: ProblemPage;
 }) => {
   const notion = new Client({ auth: notionApiKey });
-  const properties: any = {
-    [RequiredColumnName.PROBLEM_SITE]: {
-      select: {
-        name: problemPage.site,
-      },
+  const body: any = {
+    parent: {
+      type: "database_id",
+      database_id: databaseId,
     },
-    [RequiredColumnName.PROBLEM_LEVEL]: {
-      select: {
-        name: problemPage.level,
-      },
-    },
-    [RequiredColumnName.PROBLEM_NUMBER]: {
-      number: Number(problemPage.number),
-    },
-    [RequiredColumnName.PROBLEM_TITLE]: {
-      title: [
-        {
-          text: {
-            content: problemPage.title,
-          },
+    properties: {
+      [RequiredColumnName.PROBLEM_SITE]: {
+        select: {
+          name: problemPage.site,
         },
-      ],
-    },
-    [RequiredColumnName.PROBLEM_URL]: {
-      url: problemPage.url,
+      },
+      [RequiredColumnName.PROBLEM_LEVEL]: {
+        select: {
+          name: problemPage.level,
+        },
+      },
+      [RequiredColumnName.PROBLEM_NUMBER]: {
+        number: Number(problemPage.number),
+      },
+      [RequiredColumnName.PROBLEM_TITLE]: {
+        title: [
+          {
+            text: {
+              content: problemPage.title,
+            },
+          },
+        ],
+      },
+      [RequiredColumnName.PROBLEM_URL]: {
+        url: problemPage.url,
+      },
     },
   };
 
   if (problemPage.iconType == IconType.EMOJI) {
-    properties.icon = {
+    body.icon = {
       type: "emoji",
       emoji: problemPage.iconSrc,
     };
   } else if (problemPage.iconType === IconType.EXTERNAL) {
-    properties.icon = {
+    body.icon = {
       type: "external",
       external: {
         url: problemPage.iconSrc,
@@ -92,13 +98,7 @@ export const createPage = async ({
     };
   }
 
-  return await notion.pages.create({
-    parent: {
-      type: "database_id",
-      database_id: databaseId,
-    },
-    properties,
-  });
+  return await notion.pages.create(body);
 };
 
 export const queryDatabase = async ({
@@ -108,7 +108,7 @@ export const queryDatabase = async ({
 }: {
   notionApiKey: string;
   databaseId: string;
-  startCursor?: string;
+  startCursor: string | undefined;
 }) => {
   const notion = new Client({ auth: notionApiKey });
   return await notion.databases.query({

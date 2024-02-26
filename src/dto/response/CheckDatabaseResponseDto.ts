@@ -1,18 +1,23 @@
+import { IconType } from "../../common/enum";
+
 class CheckDatabaseResponseDto {
   checkValid;
   databaseId;
-  databaseIcon;
+  databaseIconType;
+  databaseIconSrc;
   databaseTitle;
 
   constructor(
     checkValid: boolean,
     databaseId?: string,
-    databaseIcon?: string,
+    databaseIconType?: IconType,
+    databaseIconSrc?: string,
     databaseTitle?: string
   ) {
     this.checkValid = checkValid;
     this.databaseId = databaseId;
-    this.databaseIcon = databaseIcon;
+    this.databaseIconType = databaseIconType;
+    this.databaseIconSrc = databaseIconSrc;
     this.databaseTitle = databaseTitle;
   }
 }

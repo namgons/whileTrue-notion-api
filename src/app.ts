@@ -1,5 +1,6 @@
 require("dotenv").config();
 import express, { Application, Request, Response } from "express";
+import bodyParser from "body-parser";
 import {
   checkDatabase,
   getAllProblemList,
@@ -12,6 +13,7 @@ import ProblemPageRequestDto from "./dto/request/ProblemPageRequestDto";
 import ProblemRequestDto from "./dto/request/ProblemRequestDto";
 
 const app: Application = express();
+app.use(bodyParser.json());
 
 app.get("/notion/token/:code", async (req: Request, res: Response) => {
   const code = req.params.code;
