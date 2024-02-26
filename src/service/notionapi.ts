@@ -1,4 +1,3 @@
-require("dotenv").config();
 import axios from "axios";
 import { NotionAccessTokenProps } from "../common/props";
 import { Client } from "@notionhq/client";

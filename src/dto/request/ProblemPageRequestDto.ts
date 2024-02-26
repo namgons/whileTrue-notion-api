@@ -1,6 +1,6 @@
 import { ProblemPage } from "../../common/class";
 
-class InsertProblemRequestDto {
+class ProblemPageRequestDto {
   notionApiKey;
   databaseId;
   problemPage;
@@ -12,4 +12,4 @@ class InsertProblemRequestDto {
   }
 }
 
-export default InsertProblemRequestDto;
+export default ProblemPageRequestDto;

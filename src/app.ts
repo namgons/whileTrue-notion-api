@@ -1,44 +1,46 @@
 require("dotenv").config();
 import express, { Application, Request, Response } from "express";
-import { NotionAccessTokenProps } from "./common/props";
-import { createPage, queryDatabase } from "./service/notionapi";
+import {
+  checkDatabase,
+  getAllProblemList,
+  insertNewProblem,
+  isProblemExists,
+  requestAccessToken,
+} from "./service/service";
+import DefaultDatabaseRequestDto from "./dto/request/DefaultDatabaseRequestDto";
+import ProblemPageRequestDto from "./dto/request/ProblemPageRequestDto";
+import ProblemRequestDto from "./dto/request/ProblemRequestDto";
 
 const app: Application = express();
 
-app.get("/notionapi/request-token/:code", async (req: Request, res: Response) => {
+app.get("/notion/token/:code", async (req: Request, res: Response) => {
   const code = req.params.code;
-  const token: NotionAccessTokenProps = await startOAuthProcess(code);
-  res.send({
-    response: token,
-  });
-
-  console.log("\n\n================================================\n\n");
-  console.log("token :", token);
-  console.log("\n\n================================================\n\n");
+  const responseDto = await requestAccessToken(code);
+  res.send(responseDto);
 });
 
-app.get("/retrieve-database", async (req: Request, res: Response) => {
-  console.log("[REQ] Retrieve a Database");
-  const response = await retrieveDatabae();
-  res.send({
-    response,
-  });
+app.post("/notion/database/check", async (req: Request, res: Response) => {
+  const requestDto: DefaultDatabaseRequestDto = req.body;
+  const responseDto = await checkDatabase(requestDto);
+  res.send(responseDto);
 });
 
-app.get("/create-page", async (req: Request, res: Response) => {
-  console.log("[REQ] Create a Page");
-  const response = await createPage();
-  res.send({
-    response,
-  });
+app.post("/notion/problem/list", async (req: Request, res: Response) => {
+  const requestDto: DefaultDatabaseRequestDto = req.body;
+  const responseDto = await getAllProblemList(requestDto);
+  res.send(responseDto);
 });
 
-app.get("/query-database", async (req: Request, res: Response) => {
-  console.log("[REQ] Query a Database");
-  const response = await queryDatabase(undefined);
-  res.send({
-    response,
-  });
+app.post("/notion/problem/insert", async (req: Request, res: Response) => {
+  const requestDto: ProblemPageRequestDto = req.body;
+  const responseDto = await insertNewProblem(requestDto);
+  res.send(responseDto);
+});
+
+app.post("/notion/problem/check", async (req: Request, res: Response) => {
+  const requestDto: ProblemRequestDto = req.body;
+  const responseDto = await isProblemExists(requestDto);
+  res.send(responseDto);
 });
 
 app.listen(process.env.PORT);

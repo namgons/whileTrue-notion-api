@@ -1,11 +1,18 @@
 import { ProblemPage } from "../common/class";
 import { IconType, RequiredColumnName, RequiredColumnType } from "../common/enum";
 import DefaultDatabaseRequestDto from "../dto/request/DefaultDatabaseRequestDto";
-import InsertProblemRequestDto from "../dto/request/InsertProblemRequestDto";
+import ProblemPageRequestDto from "../dto/request/ProblemPageRequestDto";
+import ProblemRequestDto from "../dto/request/ProblemRequestDto";
 import CheckDatabaseResponseDto from "../dto/response/CheckDatabaseResponseDto";
 import NotionTokenResponseDto from "../dto/response/NotionTokenResponseDto";
 import ProblemListResponseDto from "../dto/response/ProblemListResponseDto";
-import { createPage, queryDatabase, requestToken, retrieveDatabase } from "./notionapi";
+import {
+  createPage,
+  filterDatabase,
+  queryDatabase,
+  requestToken,
+  retrieveDatabase,
+} from "./notionapi";
 
 export const requestAccessToken = async (accessCode: string) => {
   const response = await requestToken(accessCode);
@@ -108,6 +115,11 @@ export const insertNewProblem = async ({
   notionApiKey,
   databaseId,
   problemPage,
-}: InsertProblemRequestDto) => {
+}: ProblemPageRequestDto) => {
   const response = await createPage({ notionApiKey, databaseId, problemPage });
+};
+
+export const isProblemExists = async ({ notionApiKey, databaseId, problem }: ProblemRequestDto) => {
+  const response = await filterDatabase({ notionApiKey, databaseId, problem });
+  return new CheckProblemResponseDto(response.results.length !== 0);
 };
