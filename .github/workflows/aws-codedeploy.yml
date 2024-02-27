@@ -1,0 +1,53 @@
+name: aws-codedeploy
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  S3_BUCKET_NAME: whiletrue-depoloy-s3
+  AWS_REGION: ap-northeast-2
+  CODEDEPLOY_NAME: whiletrue-codedeploy
+  CODEDEPLOY_GROUP: whiletrue-deploy-group-service
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node version
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Create .env file
+        run: |
+          touch .env
+          echo ${{ secrets.CONFIG_SECRET }} >> .env
+
+      - name: Make zip file
+        run: zip -r ./$GITHUB_SHA.zip .
+
+      - name: Configure AWS credential
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          aws-access-key-id: ${{ secrets.AWS_S3_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_S3_SECRET_ACCESS_KEY }}
+
+      - name: Upload to S3
+        run: aws s3 cp --region $AWS_REGION ./$GITHUB_SHA.zip s3://$S3_BUCKET_NAME/$GITHUB_SHA.zip
+
+      - name: Code Deploy
+        run: |
+          aws deploy create-deployment \
+            --application-name $CODEDEPLOY_NAME \
+            --deployment-config-name CodeDeployDefault.AllAtOnce \
+            --deployment-group-name $CODEDEPLOY_GROUP \
+            --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$GITHUB_SHA.zip
