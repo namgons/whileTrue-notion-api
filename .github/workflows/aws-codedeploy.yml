@@ -9,7 +9,7 @@ env:
   S3_BUCKET_NAME: whiletrue-depoloy-s3
   AWS_REGION: ap-northeast-2
   CODEDEPLOY_NAME: whiletrue-codedeploy
-  CODEDEPLOY_GROUP: whiletrue-deploy-group-service
+  CODEDEPLOY_GROUP: whiletrue-deploy-group-notionapi
 
 jobs:
   build:
