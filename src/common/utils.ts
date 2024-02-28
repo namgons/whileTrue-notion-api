@@ -1,4 +1,4 @@
-import { RequiredColumnName, RequiredColumnType } from "./enum";
+import { IconType, RequiredColumnName, RequiredColumnType, SiteType } from "./enum";
 
 export const isDatabaseValid = (properties: any) => {
   return (
@@ -13,4 +13,44 @@ export const isDatabaseValid = (properties: any) => {
     properties[RequiredColumnName.PROBLEM_TITLE].type === RequiredColumnType.PROBLEM_TITLE &&
     properties[RequiredColumnName.PROBLEM_URL].type === RequiredColumnType.PROBLEM_URL
   );
+};
+
+export const convertIconTypeToString = (input: IconType) => {
+  switch (input) {
+    case IconType.EMOJI:
+      return "emoji";
+    case IconType.EXTERNAL:
+      return "external";
+    case IconType.FILE:
+      return "file";
+  }
+};
+
+export const convertStringToIconType = (input: string) => {
+  switch (input) {
+    case "emoji":
+      return IconType.EMOJI;
+    case "external":
+      return IconType.EXTERNAL;
+    case "file":
+      return IconType.FILE;
+  }
+};
+
+export const convertSiteTypeToString = (input: SiteType) => {
+  switch (input) {
+    case SiteType.BOJ:
+      return "백준";
+    case SiteType.PROGRAMMERS:
+      return "프로그래머스";
+  }
+};
+
+export const convertSiteType = (input: string) => {
+  switch (input) {
+    case "백준":
+      return SiteType.BOJ;
+    case "프로그래머스":
+      return SiteType.PROGRAMMERS;
+  }
 };

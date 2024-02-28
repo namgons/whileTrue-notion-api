@@ -15,12 +15,12 @@ export enum RequiredColumnType {
 }
 
 export enum IconType {
-  EMOJI = "emoji",
-  EXTERNAL = "external",
-  FILE = "file",
+  EMOJI = "EMOJI",
+  EXTERNAL = "EXTERNAL",
+  FILE = "FILE",
 }
 
 export enum SiteType {
-  BOJ = "백준",
-  PROGRAMMERS = "프로그래머스",
+  BOJ = "BOJ",
+  PROGRAMMERS = "PROGRAMMERS",
 }

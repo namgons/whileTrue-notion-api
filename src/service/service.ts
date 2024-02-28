@@ -1,6 +1,6 @@
 import { ProblemPage } from "../common/class";
 import { IconType, RequiredColumnName, RequiredColumnType } from "../common/enum";
-import { isDatabaseValid } from "../common/utils";
+import { convertStringToIconType, isDatabaseValid } from "../common/utils";
 import DefaultDatabaseRequestDto from "../dto/request/DefaultDatabaseRequestDto";
 import ProblemPageRequestDto from "../dto/request/ProblemPageRequestDto";
 import ProblemRequestDto from "../dto/request/ProblemRequestDto";
@@ -30,7 +30,7 @@ export const checkDatabase = async ({ notionApiKey, databaseId }: DefaultDatabas
   }
 
   const newDatabaseId = response.id;
-  const databaseIconType = response.icon.type;
+  const databaseIconType = convertStringToIconType(response.icon.type);
   let databaseIconSrc;
   if (databaseIconType === IconType.EMOJI) {
     databaseIconSrc = response.icon.emoji;
@@ -74,7 +74,7 @@ export const getAllProblemList = async ({
     nextCursor = response.next_cursor;
 
     for (let page of response.results) {
-      const iconType = page?.icon?.type || null;
+      const iconType = convertStringToIconType(page?.icon?.type) || null;
       let iconSrc = null;
       if (iconType === IconType.EMOJI) {
         iconSrc = page?.icon?.emoji;

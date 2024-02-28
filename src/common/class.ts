@@ -26,7 +26,7 @@ export class ProblemPage extends Problem {
     number: string,
     title: string,
     url: string,
-    iconType: IconType.EMOJI | IconType.EXTERNAL,
+    iconType: IconType | null,
     iconSrc: string
   ) {
     super(siteType, level, number, title, url);
