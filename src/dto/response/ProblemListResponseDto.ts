@@ -1,11 +1,11 @@
 import { ProblemPage } from "../../common/class";
 
 class ProblemListResponseDto {
-  checkValid;
+  validCheck;
   problemPageList;
 
-  constructor(checkValid: boolean, problemPageList?: Array<ProblemPage>) {
-    this.checkValid = checkValid;
+  constructor(validCheck: boolean, problemPageList?: Array<ProblemPage>) {
+    this.validCheck = validCheck;
     this.problemPageList = problemPageList;
   }
 }

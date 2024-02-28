@@ -1,20 +1,20 @@
 import { IconType } from "../../common/enum";
 
 class CheckDatabaseResponseDto {
-  checkValid;
+  validCheck;
   databaseId;
   databaseIconType;
   databaseIconSrc;
   databaseTitle;
 
   constructor(
-    checkValid: boolean,
+    validCheck: boolean,
     databaseId?: string,
     databaseIconType?: IconType,
     databaseIconSrc?: string,
     databaseTitle?: string
   ) {
-    this.checkValid = checkValid;
+    this.validCheck = validCheck;
     this.databaseId = databaseId;
     this.databaseIconType = databaseIconType;
     this.databaseIconSrc = databaseIconSrc;
