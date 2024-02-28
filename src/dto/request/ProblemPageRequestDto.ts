@@ -1,15 +1,13 @@
-import { ProblemPage } from "../../common/class";
-
-class ProblemPageRequestDto {
-  notionApiKey;
-  databaseId;
-  problemPage;
-
-  constructor(notionApiKey: string, databaseId: string, problemPage: ProblemPage) {
-    this.notionApiKey = notionApiKey;
-    this.databaseId = databaseId;
-    this.problemPage = problemPage;
-  }
+export default interface ProblemPageRequestDto {
+  notionApiKey: string;
+  databaseId: string;
+  problemPage: {
+    siteType: string;
+    level: string;
+    number: string;
+    title: string;
+    url: string;
+    iconType: string;
+    iconSrc: string;
+  };
 }
-
-export default ProblemPageRequestDto;

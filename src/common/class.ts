@@ -7,7 +7,13 @@ export class Problem {
   title;
   url;
 
-  constructor(siteType: SiteType, level: string, number: string, title: string, url: string) {
+  constructor(
+    siteType: SiteType | undefined,
+    level: string,
+    number: string,
+    title: string,
+    url: string
+  ) {
     this.siteType = siteType;
     this.level = level;
     this.number = number;
@@ -21,7 +27,7 @@ export class ProblemPage extends Problem {
   iconSrc;
 
   constructor(
-    siteType: SiteType,
+    siteType: SiteType | undefined,
     level: string,
     number: string,
     title: string,

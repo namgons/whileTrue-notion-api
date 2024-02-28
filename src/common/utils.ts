@@ -46,7 +46,7 @@ export const convertSiteTypeToString = (input: SiteType) => {
   }
 };
 
-export const convertSiteType = (input: string) => {
+export const convertStringToSiteType = (input: string) => {
   switch (input) {
     case "백준":
       return SiteType.BOJ;

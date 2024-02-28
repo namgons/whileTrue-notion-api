@@ -1,6 +1,6 @@
 import { ProblemPage } from "../common/class";
 import { IconType, RequiredColumnName, RequiredColumnType } from "../common/enum";
-import { convertStringToIconType, isDatabaseValid } from "../common/utils";
+import { convertStringToIconType, convertStringToSiteType, isDatabaseValid } from "../common/utils";
 import DefaultDatabaseRequestDto from "../dto/request/DefaultDatabaseRequestDto";
 import ProblemPageRequestDto from "../dto/request/ProblemPageRequestDto";
 import ProblemRequestDto from "../dto/request/ProblemRequestDto";
@@ -90,7 +90,9 @@ export const getAllProblemList = async ({
         return new ProblemListResponseDto(false);
       }
 
-      const siteType = properties[RequiredColumnName.PROBLEM_SITE].select?.name;
+      const siteType = convertStringToSiteType(
+        properties[RequiredColumnName.PROBLEM_SITE].select?.name
+      );
       const level = properties[RequiredColumnName.PROBLEM_LEVEL].select?.name;
       const number = properties[RequiredColumnName.PROBLEM_NUMBER]?.number;
       const titleList = properties[RequiredColumnName.PROBLEM_TITLE]?.title;

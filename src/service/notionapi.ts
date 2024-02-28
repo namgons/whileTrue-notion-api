@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Client } from "@notionhq/client";
-import { Problem, ProblemPage } from "../common/class";
 import { IconType, RequiredColumnName } from "../common/enum";
+import { convertIconTypeToString } from "../common/utils";
 
 export const requestToken = async (accessCode: string) => {
   const NotionEndPoint = "https://api.notion.com/v1/oauth/token";
@@ -47,7 +47,7 @@ export const createPage = async ({
 }: {
   notionApiKey: string;
   databaseId: string;
-  problemPage: ProblemPage;
+  problemPage: any;
 }) => {
   const notion = new Client({ auth: notionApiKey });
   const body: any = {
@@ -84,12 +84,12 @@ export const createPage = async ({
     },
   };
 
-  if (problemPage.iconType == IconType.EMOJI) {
+  if (problemPage.iconType == convertIconTypeToString(IconType.EMOJI)) {
     body.icon = {
       type: "emoji",
       emoji: problemPage.iconSrc,
     };
-  } else if (problemPage.iconType === IconType.EXTERNAL) {
+  } else if (problemPage.iconType === convertIconTypeToString(IconType.EXTERNAL)) {
     body.icon = {
       type: "external",
       external: {
@@ -124,7 +124,7 @@ export const filterDatabase = async ({
 }: {
   notionApiKey: string;
   databaseId: string;
-  problem: Problem;
+  problem: any;
 }) => {
   const notion = new Client({ auth: notionApiKey });
   return await notion.databases.query({
