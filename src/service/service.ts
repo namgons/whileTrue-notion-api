@@ -23,10 +23,18 @@ export const requestAccessToken = async (accessCode: string) => {
 };
 
 export const checkDatabase = async ({ notionApiKey, databaseId }: DefaultDatabaseRequestDto) => {
-  const response: any = await retrieveDatabase({ notionApiKey, databaseId });
+  let response: any;
+  try {
+    response = await retrieveDatabase({ notionApiKey, databaseId });
+  } catch (error: any) {
+    if (error.status === 404) {
+      return new CheckDatabaseResponseDto("NOT_FOUND");
+    }
+    return;
+  }
 
   if (response.object !== "database") {
-    return new CheckDatabaseResponseDto(false);
+    return new CheckDatabaseResponseDto("NOT_FOUND");
   }
 
   const newDatabaseId = response.id;
@@ -43,11 +51,11 @@ export const checkDatabase = async ({ notionApiKey, databaseId }: DefaultDatabas
   const properties = response.properties;
 
   if (!isDatabaseValid(properties)) {
-    return new CheckDatabaseResponseDto(false);
+    return new CheckDatabaseResponseDto("INVALID");
   }
 
   return new CheckDatabaseResponseDto(
-    true,
+    "OK",
     newDatabaseId,
     databaseIconType,
     databaseIconSrc,

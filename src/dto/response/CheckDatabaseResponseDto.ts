@@ -8,7 +8,7 @@ class CheckDatabaseResponseDto {
   databaseTitle;
 
   constructor(
-    validCheck: boolean,
+    validCheck: string,
     databaseId?: string,
     databaseIconType?: IconType,
     databaseIconSrc?: string,
