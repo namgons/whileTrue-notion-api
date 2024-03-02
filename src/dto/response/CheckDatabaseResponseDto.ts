@@ -10,8 +10,8 @@ class CheckDatabaseResponseDto {
   constructor(
     validCheck: string,
     databaseId?: string,
-    databaseIconType?: IconType,
-    databaseIconSrc?: string,
+    databaseIconType?: IconType | null,
+    databaseIconSrc?: string | null,
     databaseTitle?: string
   ) {
     this.validCheck = validCheck;

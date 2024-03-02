@@ -38,8 +38,8 @@ export const checkDatabase = async ({ notionApiKey, databaseId }: DefaultDatabas
   }
 
   const newDatabaseId = response.id;
-  const databaseIconType = convertStringToIconType(response.icon.type);
-  let databaseIconSrc;
+  const databaseIconType = convertStringToIconType(response?.icon?.type);
+  let databaseIconSrc = null;
   if (databaseIconType === IconType.EMOJI) {
     databaseIconSrc = response.icon.emoji;
   } else if (databaseIconType === IconType.EXTERNAL) {
@@ -82,14 +82,14 @@ export const getAllProblemList = async ({
     nextCursor = response.next_cursor;
 
     for (let page of response.results) {
-      const iconType = convertStringToIconType(page?.icon?.type) || null;
+      const iconType = convertStringToIconType(page?.icon?.type);
       let iconSrc = null;
       if (iconType === IconType.EMOJI) {
-        iconSrc = page?.icon?.emoji;
+        iconSrc = page.icon.emoji;
       } else if (iconType === IconType.EXTERNAL) {
-        iconSrc = page?.icon?.external?.url;
+        iconSrc = page.icon.external.url;
       } else if (iconType === IconType.FILE) {
-        iconSrc = page?.icon?.file?.url;
+        iconSrc = page.icon.file.url;
       }
 
       const properties = page.properties;

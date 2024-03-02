@@ -34,6 +34,8 @@ export const convertStringToIconType = (input: string) => {
       return IconType.EXTERNAL;
     case "file":
       return IconType.FILE;
+    default:
+      return null;
   }
 };
 
