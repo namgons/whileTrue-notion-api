@@ -1,14 +1,14 @@
 {
-  "name": "chrome-extension-backend",
+  "name": "whiletrue-notion-api",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "whiletrue backend notion api server",
+  "main": "src/app.ts",
   "scripts": {
     "dev": "nodemon src/app.ts",
-    "start": "node index.js",
+    "start": "node dist/app.js",
     "build": "npx tsc"
   },
-  "author": "",
+  "author": "namgons",
   "license": "ISC",
   "dependencies": {
     "@notionhq/client": "^2.2.14",
