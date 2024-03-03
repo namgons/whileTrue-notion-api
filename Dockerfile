@@ -1,5 +1,6 @@
-FROM node:16
+FROM node:18
 WORKDIR /notionapi
 COPY . .
 RUN npm install
-CMD ["npm", "run", "dev"]
+RUN npm run build
+CMD ["npm", "run", "start"]
