@@ -1,33 +1,6 @@
-import axios from "axios";
 import { Client } from "@notionhq/client";
 import { IconType, RequiredColumnName } from "../common/enum";
 import { convertIconTypeToString } from "../common/utils";
-
-export const requestToken = async (accessCode: string) => {
-  const NotionEndPoint = "https://api.notion.com/v1/oauth/token";
-
-  const encoded = Buffer.from(
-    `${process.env.OAUTH_CLIENT_ID}:${process.env.OAUTH_CLIENT_SECRET}`
-  ).toString("base64");
-
-  return await axios
-    .post(
-      NotionEndPoint,
-      {
-        grant_type: "authorization_code",
-        code: accessCode,
-        redirect_uri: process.env.REDIRECT_URI,
-      },
-      {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Basic ${encoded}`,
-        },
-      }
-    )
-    .then((resp) => resp.data);
-};
 
 export const retrieveDatabase = async ({
   notionApiKey,
@@ -114,27 +87,5 @@ export const queryDatabase = async ({
   return await notion.databases.query({
     database_id: databaseId,
     start_cursor: startCursor,
-  });
-};
-
-export const filterDatabase = async ({
-  notionApiKey,
-  databaseId,
-  problem,
-}: {
-  notionApiKey: string;
-  databaseId: string;
-  problem: any;
-}) => {
-  const notion = new Client({ auth: notionApiKey });
-  return await notion.databases.query({
-    database_id: databaseId,
-    filter: {
-      and: [
-        { property: RequiredColumnName.PROBLEM_SITE, select: { equals: problem.siteType } },
-        { property: RequiredColumnName.PROBLEM_NUMBER, number: { equals: Number(problem.number) } },
-        { property: RequiredColumnName.PROBLEM_TITLE, rich_text: { contains: problem.title } },
-      ],
-    },
   });
 };

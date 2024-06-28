@@ -1,26 +1,12 @@
 import { ProblemPage } from "../common/class";
-import { IconType, RequiredColumnName, RequiredColumnType } from "../common/enum";
+import { IconType, RequiredColumnName } from "../common/enum";
 import { convertStringToIconType, convertStringToSiteType, isDatabaseValid } from "../common/utils";
 import DefaultDatabaseRequestDto from "../dto/request/DefaultDatabaseRequestDto";
 import ProblemPageRequestDto from "../dto/request/ProblemPageRequestDto";
-import ProblemRequestDto from "../dto/request/ProblemRequestDto";
 import CheckDatabaseResponseDto from "../dto/response/CheckDatabaseResponseDto";
-import CheckProblemResponseDto from "../dto/response/CheckProblemResponseDto";
-import NotionTokenResponseDto from "../dto/response/NotionTokenResponseDto";
 import ProblemListResponseDto from "../dto/response/ProblemListResponseDto";
 import SuccessResponseDto from "../dto/response/SuccessResponseDto";
-import {
-  createPage,
-  filterDatabase,
-  queryDatabase,
-  requestToken,
-  retrieveDatabase,
-} from "./notionapi";
-
-export const requestAccessToken = async (accessCode: string) => {
-  const response = await requestToken(accessCode);
-  return new NotionTokenResponseDto(response);
-};
+import { createPage, queryDatabase, retrieveDatabase } from "./notionapi";
 
 export const checkDatabase = async ({ notionApiKey, databaseId }: DefaultDatabaseRequestDto) => {
   let response: any;
@@ -127,7 +113,7 @@ export const getAllProblemList = async ({
   return new ProblemListResponseDto(true, problemPageList);
 };
 
-export const insertNewProblem = async ({
+export const saveNewProblem = async ({
   notionApiKey,
   databaseId,
   problemPage,
@@ -137,14 +123,5 @@ export const insertNewProblem = async ({
     return new SuccessResponseDto(true);
   } catch {
     return new SuccessResponseDto(false);
-  }
-};
-
-export const isProblemExists = async ({ notionApiKey, databaseId, problem }: ProblemRequestDto) => {
-  try {
-    const response = await filterDatabase({ notionApiKey, databaseId, problem });
-    return new CheckProblemResponseDto(true, response.results.length !== 0);
-  } catch {
-    return new CheckProblemResponseDto(false);
   }
 };
