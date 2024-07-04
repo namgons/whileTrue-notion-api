@@ -1,4 +1,5 @@
 import express, { Application, Request, Response } from "express";
+import cors from "cors";
 import bodyParser from "body-parser";
 import { checkDatabase, getAllProblemList, saveNewProblem } from "./service/service";
 import DefaultDatabaseRequestDto from "./dto/request/DefaultDatabaseRequestDto";
@@ -6,6 +7,7 @@ import ProblemPageRequestDto from "./dto/request/ProblemPageRequestDto";
 
 const app: Application = express();
 app.use(bodyParser.json());
+app.use(cors());
 
 app.post("/api/notion/database/check", async (req: Request, res: Response) => {
   const requestDto: DefaultDatabaseRequestDto = req.body;
