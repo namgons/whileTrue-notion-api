@@ -1,4 +1,3 @@
-require("dotenv").config();
 import express, { Application, Request, Response } from "express";
 import bodyParser from "body-parser";
 import { checkDatabase, getAllProblemList, saveNewProblem } from "./service/service";
@@ -26,4 +25,4 @@ app.post("/api/notion/problem/save", async (req: Request, res: Response) => {
   res.send(responseDto);
 });
 
-app.listen(process.env.PORT);
+app.listen(3000);

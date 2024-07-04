@@ -1,5 +1,5 @@
 import { ProblemPage } from "../common/class";
-import { IconType, RequiredColumnName, SiteType } from "../common/enum";
+import { IconType, RequiredColumnName } from "../common/enum";
 import { convertStringToIconType, convertStringToSiteType, isDatabaseValid } from "../common/utils";
 import DefaultDatabaseRequestDto from "../dto/request/DefaultDatabaseRequestDto";
 import ProblemPageRequestDto from "../dto/request/ProblemPageRequestDto";
