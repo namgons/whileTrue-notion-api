@@ -1,5 +1,5 @@
 import { ProblemPage } from "../common/class";
-import { IconType, RequiredColumnName } from "../common/enum";
+import { IconType, RequiredColumnName, SiteType } from "../common/enum";
 import { convertStringToIconType, convertStringToSiteType, isDatabaseValid } from "../common/utils";
 import DefaultDatabaseRequestDto from "../dto/request/DefaultDatabaseRequestDto";
 import ProblemPageRequestDto from "../dto/request/ProblemPageRequestDto";
@@ -8,7 +8,10 @@ import ProblemListResponseDto from "../dto/response/ProblemListResponseDto";
 import SuccessResponseDto from "../dto/response/SuccessResponseDto";
 import { createPage, queryDatabase, retrieveDatabase } from "./notionapi";
 
-export const checkDatabase = async ({ notionApiKey, databaseId }: DefaultDatabaseRequestDto) => {
+export const checkDatabase = async ({
+  notionApiKey,
+  databaseId,
+}: DefaultDatabaseRequestDto): Promise<CheckDatabaseResponseDto> => {
   let response: any;
   try {
     response = await retrieveDatabase({ notionApiKey, databaseId });
@@ -16,7 +19,6 @@ export const checkDatabase = async ({ notionApiKey, databaseId }: DefaultDatabas
     if (error.status === 404) {
       return new CheckDatabaseResponseDto("NOT_FOUND");
     }
-    return;
   }
 
   if (response.object !== "database") {
@@ -25,14 +27,8 @@ export const checkDatabase = async ({ notionApiKey, databaseId }: DefaultDatabas
 
   const newDatabaseId = response.id;
   const databaseIconType = convertStringToIconType(response?.icon?.type);
-  let databaseIconSrc = null;
-  if (databaseIconType === IconType.EMOJI) {
-    databaseIconSrc = response.icon.emoji;
-  } else if (databaseIconType === IconType.EXTERNAL) {
-    databaseIconSrc = response.icon.external.url;
-  } else if (databaseIconType === IconType.FILE) {
-    databaseIconSrc = response.icon.file.url;
-  }
+  const databaseIconSrc = getIconSrcByType(databaseIconType, response);
+
   const databaseTitle = response.title[0].plain_text;
   const properties = response.properties;
 
@@ -52,7 +48,7 @@ export const checkDatabase = async ({ notionApiKey, databaseId }: DefaultDatabas
 export const getAllProblemList = async ({
   notionApiKey,
   databaseId,
-}: DefaultDatabaseRequestDto) => {
+}: DefaultDatabaseRequestDto): Promise<ProblemListResponseDto> => {
   let hasMore = true;
   let nextCursor: any = undefined;
 
@@ -69,14 +65,7 @@ export const getAllProblemList = async ({
 
     for (let page of response.results) {
       const iconType = convertStringToIconType(page?.icon?.type);
-      let iconSrc = null;
-      if (iconType === IconType.EMOJI) {
-        iconSrc = page.icon.emoji;
-      } else if (iconType === IconType.EXTERNAL) {
-        iconSrc = page.icon.external.url;
-      } else if (iconType === IconType.FILE) {
-        iconSrc = page.icon.file.url;
-      }
+      const iconSrc = getIconSrcByType(iconType, page);
 
       const properties = page.properties;
 
@@ -84,23 +73,9 @@ export const getAllProblemList = async ({
         return new ProblemListResponseDto(false);
       }
 
-      const siteType = convertStringToSiteType(
-        properties[RequiredColumnName.PROBLEM_SITE].select?.name
-      );
-      const level = properties[RequiredColumnName.PROBLEM_LEVEL].select?.name;
-      const number = properties[RequiredColumnName.PROBLEM_NUMBER]?.number;
-      const titleList = properties[RequiredColumnName.PROBLEM_TITLE]?.title;
-      const url = properties[RequiredColumnName.PROBLEM_URL]?.url;
+      const { siteType, level, number, titleList, url } = parseProperty(properties);
 
-      if (
-        siteType === null ||
-        level === null ||
-        number === null ||
-        titleList === null ||
-        titleList.length === 0 ||
-        titleList[0]?.plain_text === null ||
-        url === null
-      ) {
+      if (!isColumnDataIncluded(siteType, level, number, titleList, url)) {
         continue;
       }
 
@@ -117,11 +92,49 @@ export const saveNewProblem = async ({
   notionApiKey,
   databaseId,
   problemPage,
-}: ProblemPageRequestDto) => {
+}: ProblemPageRequestDto): Promise<SuccessResponseDto> => {
   try {
     await createPage({ notionApiKey, databaseId, problemPage });
     return new SuccessResponseDto(true);
   } catch {
     return new SuccessResponseDto(false);
   }
+};
+
+const parseProperty = (properties: any) => {
+  return {
+    siteType: convertStringToSiteType(properties[RequiredColumnName.PROBLEM_SITE].select?.name),
+    level: properties[RequiredColumnName.PROBLEM_LEVEL].select?.name,
+    number: properties[RequiredColumnName.PROBLEM_NUMBER]?.number,
+    titleList: properties[RequiredColumnName.PROBLEM_TITLE]?.title,
+    url: properties[RequiredColumnName.PROBLEM_URL]?.url,
+  };
+};
+
+const getIconSrcByType = (iconType: IconType | null, data: any) => {
+  switch (iconType) {
+    case IconType.EMOJI:
+      return data.icon.emoji;
+
+    case IconType.EXTERNAL:
+      return data.icon.external.url;
+
+    case IconType.FILE:
+      return data.icon.file.url;
+
+    default:
+      return null;
+  }
+};
+
+const isColumnDataIncluded = (siteType: any, level: any, number: any, titleList: any, url: any) => {
+  return !(
+    siteType === null ||
+    level === null ||
+    number === null ||
+    titleList === null ||
+    titleList.length === 0 ||
+    titleList[0]?.plain_text === null ||
+    url === null
+  );
 };
