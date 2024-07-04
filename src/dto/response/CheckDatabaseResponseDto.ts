@@ -1,4 +1,4 @@
-import { IconType } from "../../common/enum";
+import { IconType, RESP_STATUS } from "../../common/enum";
 
 class CheckDatabaseResponseDto {
   validCheck;
@@ -8,7 +8,7 @@ class CheckDatabaseResponseDto {
   databaseTitle;
 
   constructor(
-    validCheck: string,
+    validCheck: RESP_STATUS,
     databaseId?: string,
     databaseIconType?: IconType | null,
     databaseIconSrc?: string | null,

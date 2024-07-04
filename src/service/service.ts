@@ -1,5 +1,5 @@
 import { ProblemPage } from "../common/class";
-import { IconType, RequiredColumnName } from "../common/enum";
+import { IconType, RequiredColumnName, RESP_STATUS } from "../common/enum";
 import { convertStringToIconType, convertStringToSiteType, isDatabaseValid } from "../common/utils";
 import DefaultDatabaseRequestDto from "../dto/request/DefaultDatabaseRequestDto";
 import ProblemPageRequestDto from "../dto/request/ProblemPageRequestDto";
@@ -17,12 +17,12 @@ export const checkDatabase = async ({
     response = await retrieveDatabase({ notionApiKey, databaseId });
   } catch (error: any) {
     if (error.status === 404) {
-      return new CheckDatabaseResponseDto("NOT_FOUND");
+      return new CheckDatabaseResponseDto(RESP_STATUS.NOT_FOUND);
     }
   }
 
   if (response.object !== "database") {
-    return new CheckDatabaseResponseDto("NOT_FOUND");
+    return new CheckDatabaseResponseDto(RESP_STATUS.NOT_FOUND);
   }
 
   const newDatabaseId = response.id;
@@ -33,11 +33,11 @@ export const checkDatabase = async ({
   const properties = response.properties;
 
   if (!isDatabaseValid(properties)) {
-    return new CheckDatabaseResponseDto("INVALID");
+    return new CheckDatabaseResponseDto(RESP_STATUS.INVALID);
   }
 
   return new CheckDatabaseResponseDto(
-    "OK",
+    RESP_STATUS.SUCCESS,
     newDatabaseId,
     databaseIconType,
     databaseIconSrc,
@@ -70,7 +70,7 @@ export const getAllProblemList = async ({
       const properties = page.properties;
 
       if (!isDatabaseValid(properties)) {
-        return new ProblemListResponseDto(false);
+        return new ProblemListResponseDto(RESP_STATUS.INVALID);
       }
 
       const { siteType, level, number, titleList, url } = parseProperty(properties);
@@ -85,7 +85,7 @@ export const getAllProblemList = async ({
     }
   }
 
-  return new ProblemListResponseDto(true, problemPageList);
+  return new ProblemListResponseDto(RESP_STATUS.SUCCESS, problemPageList);
 };
 
 export const saveNewProblem = async ({
@@ -95,9 +95,9 @@ export const saveNewProblem = async ({
 }: ProblemPageRequestDto): Promise<SuccessResponseDto> => {
   try {
     await createPage({ notionApiKey, databaseId, problemPage });
-    return new SuccessResponseDto(true);
+    return new SuccessResponseDto(RESP_STATUS.SUCCESS);
   } catch {
-    return new SuccessResponseDto(false);
+    return new SuccessResponseDto(RESP_STATUS.FAILED);
   }
 };
 
