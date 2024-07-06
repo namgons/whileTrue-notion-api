@@ -1,6 +1,6 @@
 import { Client } from "@notionhq/client";
 import { IconType, RequiredColumnName } from "../common/enum";
-import { convertIconTypeToString } from "../common/utils";
+import { convertSiteTypeToString } from "../common/utils";
 
 export const retrieveDatabase = async ({
   notionApiKey,
@@ -31,7 +31,7 @@ export const createPage = async ({
     properties: {
       [RequiredColumnName.PROBLEM_SITE]: {
         select: {
-          name: problemPage.siteType,
+          name: convertSiteTypeToString(problemPage.siteType),
         },
       },
       [RequiredColumnName.PROBLEM_LEVEL]: {
@@ -57,12 +57,12 @@ export const createPage = async ({
     },
   };
 
-  if (problemPage.iconType == convertIconTypeToString(IconType.EMOJI)) {
+  if (problemPage.iconType === IconType.EMOJI) {
     body.icon = {
       type: "emoji",
       emoji: problemPage.iconSrc,
     };
-  } else if (problemPage.iconType === convertIconTypeToString(IconType.EXTERNAL)) {
+  } else if (problemPage.iconType === IconType.EXTERNAL) {
     body.icon = {
       type: "external",
       external: {
