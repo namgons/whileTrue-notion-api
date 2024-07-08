@@ -36,6 +36,9 @@ export const checkDatabase = async ({
       databaseTitle
     );
   } catch (error: any) {
+    if (error.status === 401) {
+      return new CheckDatabaseResponseDto(RESP_STATUS.UNAUTHORIZED);
+    }
     if (error.status === 404) {
       return new CheckDatabaseResponseDto(RESP_STATUS.NOT_FOUND);
     }
