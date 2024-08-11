@@ -45,6 +45,8 @@ export const convertSiteTypeToString = (input: SiteType) => {
       return "백준";
     case SiteType.PROGRAMMERS:
       return "프로그래머스";
+    case SiteType.PROGRAMMERS_SQL:
+      return "프로그래머스 SQL";
   }
 };
 
@@ -54,5 +56,7 @@ export const convertStringToSiteType = (input: string) => {
       return SiteType.BOJ;
     case "프로그래머스":
       return SiteType.PROGRAMMERS;
+    case "프로그래머스 SQL":
+      return SiteType.PROGRAMMERS_SQL;
   }
 };

@@ -23,6 +23,7 @@ export enum IconType {
 export enum SiteType {
   BOJ = "BOJ",
   PROGRAMMERS = "PROGRAMMERS",
+  PROGRAMMERS_SQL = "PROGRAMMERS_SQL",
 }
 
 export enum RESP_STATUS {
